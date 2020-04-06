@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import javax.swing.*;
+import java.util.Scanner;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 
 public class Game extends Canvas implements Runnable{
@@ -14,12 +17,17 @@ public class Game extends Canvas implements Runnable{
     
     //pipe settings
     public static int pipeSpeed = 5, pipeSpace = 75;
-    public Game(){
+    
+    //death stuff
+    Scanner sc;
+    String msg = "";
+    public Game() throws Exception{
         h = new Handler();
         p = new Player(50, 50, h);
         h.add(p);
         ki = new KeyInput(h);
         addKeyListener(ki);
+        sc = new Scanner(new File("death.txt"), StandardCharsets.UTF_8.name());
         new Window(W, H, "REEEE", this);
     }
     public synchronized void start(){
@@ -44,6 +52,7 @@ public class Game extends Canvas implements Runnable{
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
+        long timer2 = System.currentTimeMillis();
         while(running){
             long now = System.nanoTime();
             delta += (now-lastTime) / ns;
@@ -69,16 +78,25 @@ public class Game extends Canvas implements Runnable{
                     h.add(new ScoreZone(y));
                 }
             }
-        }
+            if(System.currentTimeMillis() - timer2 > 35){
+                timer2 += 35;
+                //typing effect for death message
+                if(!p.alive){
+                    removeKeyListener(ki);
+                    //get the death message and update it
+                    if(sc.hasNext()){
+                        msg=sc.nextLine();
+                        System.out.println(msg);
+                    }
+                }
+            }
+        } 
         stop();
         //end templated game loop
     }
 
     public void tick(){
         h.tick();
-        if(!p.alive){
-            removeKeyListener(ki);
-        }
     }
     public void render(){
         //allow pre rendering of frames (to make game smoother)
@@ -104,7 +122,7 @@ public class Game extends Canvas implements Runnable{
         p.render(g);
         if(!p.alive){
             g.setColor(Color.red);
-            g.drawString("You died", 0, 75);
+            g.drawString(msg, p.x-(msg.length()*3/2), p.y);
         }
         bs.show();
         g.dispose(); // clear the memory usage
@@ -115,6 +133,10 @@ public class Game extends Canvas implements Runnable{
         return curr;
     }
     public static void main(String[] args){
-        new Game();
+        try{
+            new Game();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

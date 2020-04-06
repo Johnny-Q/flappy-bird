@@ -12,7 +12,7 @@ public class Pipe extends GameObject{
         this.p = p;
     }
     public void tick(){
-        //move the pipe
+        //move the pipe if the player is alive
         if(p.alive){
             x -= Game.pipeSpeed;
         }

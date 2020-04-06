@@ -35,6 +35,7 @@ public class Player extends GameObject{
                     alive = false;
                 }
             }
+            //add score if collided with scorezone
             else if(o.id == ID.ScoreZone && alive){
                 if(collision(this.getBounds(), o.getBounds())){
                     ScoreZone s = (ScoreZone) o;
