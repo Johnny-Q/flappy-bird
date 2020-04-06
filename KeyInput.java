@@ -8,6 +8,7 @@ public class KeyInput extends KeyAdapter{
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
         for(GameObject o:handler.objects){
+            //make the player jump when space is pressed
             if(o.id == ID.Player){
                 Player p = (Player) o;
                 if(p.enabled){
@@ -15,7 +16,6 @@ public class KeyInput extends KeyAdapter{
                         o.vely = -10;
                     }
                 }
-                
             }
         }
     }

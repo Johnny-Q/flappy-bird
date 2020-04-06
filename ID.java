@@ -1,4 +1,5 @@
 public enum ID{
     Player(),
-    Pipe();
+    Pipe(),
+    ScoreZone();
 }

@@ -1,29 +1,34 @@
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 public class Pipe extends GameObject{
 
     //y will be center of the spacing
-    private final int space = 75;
     private final int W = 50, H = 1000;
-    private final int pipeSpeed = 5;
-    public Pipe(int y){
+    Player p;
+    public Pipe(int y, Player p){
         super(Game.W, y, ID.Pipe);
+        this.p = p;
     }
     public void tick(){
-        x-=pipeSpeed;
+        //move the pipe
+        if(p.alive){
+            x -= Game.pipeSpeed;
+        }
     }
     public void render(Graphics g){
         g.setColor(Color.green);
-        /*
         //top pipe
-        g.fillRect(x, y-space-H, W, H);
+        //have to use these weird equations because it draws from the top
+        g.fillRect(x, y-Game.pipeSpace-H, W, H);
         //bottom pipe
-        g.fillRect(x, y+space, W, H);
-        */
-        g.fillRect(x, y, W, H);
+        g.fillRect(x, y+Game.pipeSpace, W, H);
     }
-    public Rectangle getBounds(){
-        return new Rectangle(x, y, W, H);
+    public ArrayList<Rectangle> getBounds(){
+        ArrayList<Rectangle> bounds = new ArrayList<Rectangle>();
+        bounds.add(new Rectangle(x, y-Game.pipeSpace-H, W, H));
+        bounds.add(new Rectangle(x, y+Game.pipeSpace, W, H));
+        return bounds;
     }
 }
